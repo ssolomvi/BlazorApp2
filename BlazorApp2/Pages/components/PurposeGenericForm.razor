@@ -1,0 +1,48 @@
+@using Meziantou.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
+@using Pax_AC_Design.ModuleCalculate.Request
+
+<h3>EngineGenericForm</h3>
+
+<EditForm Model="_Purpose" OnSubmit="() => { }">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <GenericForm Model="_Purpose" EditorClass="form-control">
+        <FieldTemplate Context="field">
+            <div class="form-group row mb-3">
+                <label class="col-md-2 col-form-label"
+                       for="@field.EditorId">
+                    @field.DisplayName
+                </label>
+                <div class="col-md-10">
+                    @field.EditorTemplate
+                    @field.FieldValidationTemplate
+                </div>
+            </div>
+        </FieldTemplate>
+    </GenericForm>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</EditForm>
+
+@_Purpose
+
+@code {
+
+    RequestPurpose _Purpose { get; set; } = СreatePurposeWithTestData();
+
+    private static RequestPurpose СreatePurposeWithTestData()
+    {
+        return new RequestPurpose(AircraftType.BusinessJet,
+            HighLiftDevice.CleanAirfoil,
+            10,
+            750,
+            1300,
+            12,
+            8
+            );
+    }
+
+}

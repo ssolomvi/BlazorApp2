@@ -1,0 +1,108 @@
+@using Meziantou.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
+@using BlazorApp2.Pages.dto
+@using Blazored.LocalStorage
+@using pax_ac_design.ModuleCalculate.PreliminarySizing
+@using Pax_AC_Design.ModuleCalculate.Request
+
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+
+@* <EditForm Model="_request" OnSubmit="() => { }"> *@
+<EditForm Model="_request" OnSubmit="HandleOnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="container">
+        <div class="row my-3">
+            <div class="col-3 border border-secondary rounded mx-3">
+                <CustomGenericForm Model="RequestEngineDto" Header="Данные о двигателе:"/>
+            </div>
+            <div class="col-8 border border-secondary rounded mx-3">
+                <CustomGenericForm Model="RequestPurposeDto" Header="Данные о назначении самолета:"/>
+            </div>
+        </div>
+        <div class="row my-3" style="justify-content: center">
+            <button type="submit" class="btn btn-primary col-3">Рассчитать</button>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+
+    RequestAircraftDto RequestAircraftDto { get; set; } = CreateRequestAircraftWithTestData();
+    RequestPrognosisDto RequestPrognosisDto { get; set; } = CreateRequestPrognosisWithTestData();
+    RequestEngineDto RequestEngineDto { get; set; } = CreateRequestEngineWithTestData();
+    RequestPurposeDto RequestPurposeDto { get; set; } = CreateRequestPurposeWithTestData();
+
+    private static RequestAircraftDto CreateRequestAircraftWithTestData()
+    {
+        return new RequestAircraftDto();
+    }
+
+    private static RequestPrognosisDto CreateRequestPrognosisWithTestData()
+    {
+        return new RequestPrognosisDto();
+    }
+
+    private static RequestEngineDto CreateRequestEngineWithTestData()
+    {
+        var reqEngine = new RequestEngineDto();
+        reqEngine.EngineType = EngineType.Turbojet;
+        reqEngine.NumberOfEngines = 4;
+        reqEngine.BypassRatio = 8.7;
+
+        return reqEngine;
+    }
+
+    private static RequestPurposeDto CreateRequestPurposeWithTestData()
+    {
+        var reqPurpose = new RequestPurposeDto();
+        reqPurpose.AircraftType = AircraftType.BusinessJet;
+        reqPurpose.HighLiftDevice = HighLiftDevice.CleanAirfoil;
+        reqPurpose.HeightAboveSeaLevel = 10;
+        reqPurpose.LandingDistance = 750;
+        reqPurpose.TakeOffGroundRoll = 1300;
+        reqPurpose.WingAspectRatio = 12;
+        reqPurpose.WingWettedArea = 8;
+
+        return reqPurpose;
+    }
+
+    private Request _request { get; set; } = new();
+
+    public void HandleOnValidSubmit()
+    {
+        var reqAircraft = new RequestAircraft(RequestAircraftDto);
+        var reqEngine = new RequestEngine(RequestEngineDto);
+        var reqPrognosis = new RequestPrognosis(RequestPrognosisDto);
+        var reqPurpose = new RequestPurpose(RequestPurposeDto);
+
+        _request = new Request(reqAircraft, reqEngine, reqPrognosis, reqPurpose);
+
+        var block1LandingDistance = new Block1LandingDistance();
+        block1LandingDistance.Handle(_request);
+
+        Console.WriteLine(
+            "--- BLOCK 1 ---"
+            + Environment.NewLine
+            + "Максимальный коэффициент подъемной силы, C_L,max: {0:F3}"
+            + Environment.NewLine
+            + "Отношение максимальной посадочной массы к максимальной взлетной массе, m_ML/m_MTO: {1:F3}"
+            + Environment.NewLine
+            + "Максимальная нагрузка на крыло, m/S (или m_MTO/S_W): {2:F3}"
+            + Environment.NewLine,
+            _request.RequestPurpose.MaxLiftCoefficient,
+            _request.RequestPurpose.MaxLandingMassToMaxTakeOffMassRatio,
+            _request.RequestPurpose.MaxWingLoading
+            );
+
+        NavigationManager.NavigateTo(
+            $"/results-block-1?maxLiftCoefficient={_request.RequestPurpose.MaxLiftCoefficient}" +
+            $"&maxLandingMassToMaxTakeOffMassRatio={_request.RequestPurpose.MaxLandingMassToMaxTakeOffMassRatio}" +
+            $"&maxWingLoading={_request.RequestPurpose.MaxWingLoading}"
+            );
+    }
+
+}

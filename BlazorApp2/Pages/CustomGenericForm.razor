@@ -1,0 +1,30 @@
+@using Meziantou.AspNetCore.Components
+@typeparam TModel
+
+<CascadingValue Value="@this" IsFixed="true">
+    <p style="font-weight: bold; text-align: center;">@Header</p>
+    <GenericForm Model="@Model" EditorClass="form-control">
+        <FieldTemplate Context="field">
+            <div class="form-group col mb-3">
+                <label class="row-md-4"
+                       for="@field.EditorId">
+                    @field.DisplayName
+                </label>
+                <div class="row-md-10">
+                    @field.EditorTemplate
+                    @field.FieldValidationTemplate
+                </div>
+            </div>
+        </FieldTemplate>
+    </GenericForm>
+</CascadingValue>
+
+@code {
+
+    [Parameter]
+    public TModel? Model { get; set; }
+
+    [Parameter]
+    public String Header { get; set; }
+
+}

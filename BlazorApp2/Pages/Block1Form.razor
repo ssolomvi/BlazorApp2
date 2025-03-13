@@ -1,0 +1,182 @@
+@page "/form"
+@using Pax_AC_Design.ModuleCalculate.Request
+@using pax_ac_design.ModuleCalculate.PreliminarySizing
+
+@inject NavigationManager NavigationManager
+
+<EditForm EditContext="@editContext" OnValidSubmit="HandleOnBlock1Calculating">
+    <div class="mb-3">
+        <div class="form-group row mb-3">
+            <label class="col-md-2 col-form-label">Request Engine</label>
+        </div>
+        <div class="form-group row mb-3">
+            <label class="col-md-2 col-form-label">Engine type: <span class="text-danger">*</span></label>
+            <div class="col-md-10">
+                <InputSelect @bind-Value="@_request.RequestEngine.EngineType">
+
+                    @foreach (var engineType in Enum.GetValues(typeof(EngineType)))
+                    {
+                        <option value="@engineType">@engineType</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label class="col-md-2 col-form-label">Number of engines: <span class="text-danger">*</span></label>
+            <div class="col-md-10">
+                <NumberInput TValue="int?" 
+                             Value="_request.RequestEngine.NumberOfEngines" 
+                             ValueExpression="() => _request.RequestEngine.NumberOfEngines" 
+                             Placeholder="Enter number of engines"/>
+            </div>
+        </div>
+        @* <div class="form-group row mb-3"> *@
+        @*     <label class="col-md-2 col-form-label">Bypass ratio: <span class="text-danger">*</span></label> *@
+        @*     <div class="col-md-10"> *@
+        @*         <NumberInput TValue="double?" Value="_request.RequestEngine.BypassRatio" ValueExpression="() => _request.RequestEngine.BypassRatio" Placeholder="Enter bypass ratio" Step="0.001"/> *@
+        @*         $1$ <ValidationMessage For="@(() => _request.RequestEngine.BypassRatio)"/> #1# *@
+        @*     </div> *@
+        @* </div> *@
+    </div>
+    @* <div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">Request Purpose</label> *@
+    @*     </div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">Aircraft type: <span class="text-danger">*</span></label> *@
+    @*         <div class="col-md-10"> *@
+    @*             <InputSelect @bind-Value="@_request.RequestPurpose.AircraftType"> *@
+    @* *@
+    @*                 @foreach (var aircraftType in Enum.GetValues(typeof(AircraftType))) *@
+    @*                 { *@
+    @*                     <option value="@aircraftType">@aircraftType</option> *@
+    @*                 } *@
+    @*             </InputSelect> *@
+    @*         </div> *@
+    @*     </div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">High lift device: <span class="text-danger">*</span></label> *@
+    @*         <div class="col-md-10"> *@
+    @*             <InputSelect @bind-Value="@_request.RequestPurpose.HighLiftDevice"> *@
+    @* *@
+    @*                 @foreach (var highLiftDevice in Enum.GetValues(typeof(HighLiftDevice))) *@
+    @*                 { *@
+    @*                     <option value="@highLiftDevice">@highLiftDevice</option> *@
+    @*                 } *@
+    @*             </InputSelect> *@
+    @*         </div> *@
+    @*     </div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">Height above sea level: <span class="text-danger">*</span></label> *@
+    @*         <div class="col-md-10"> *@
+    @*             <NumberInput TValue="double?" Value="_request.RequestPurpose.HeightAboveSeaLevel" ValueExpression="() => _request.RequestPurpose.HeightAboveSeaLevel" Placeholder="Enter height above sea level" Step="0.001"/> *@
+    @*             $1$ <ValidationMessage For="@(() => _request.RequestPurpose.HeightAboveSeaLevel)"/> #1# *@
+    @*         </div> *@
+    @*     </div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">Landing distance: <span class="text-danger">*</span></label> *@
+    @*         <div class="col-md-10"> *@
+    @*             <NumberInput TValue="double?" Value="_request.RequestPurpose.LandingDistance" ValueExpression="() => _request.RequestPurpose.LandingDistance" Placeholder="Enter landing distance" Step="0.001"/> *@
+    @*             $1$ <ValidationMessage For="@(() => _request.RequestPurpose.LandingDistance)"/> #1# *@
+    @*         </div> *@
+    @*     </div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">Take off ground roll: <span class="text-danger">*</span></label> *@
+    @*         <div class="col-md-10"> *@
+    @*             <NumberInput TValue="double?" Value="_request.RequestPurpose.TakeOffGroundRoll" ValueExpression="() => _request.RequestPurpose.TakeOffGroundRoll" Placeholder="Enter take off ground roll" Step="0.001"/> *@
+    @*             $1$ <ValidationMessage For="@(() => _request.RequestPurpose.TakeOffGroundRoll)"/> #1# *@
+    @*         </div> *@
+    @*     </div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">Wing aspect ratio: <span class="text-danger">*</span></label> *@
+    @*         <div class="col-md-10"> *@
+    @*             <NumberInput TValue="double?" Value="_request.RequestPurpose.WingAspectRatio" ValueExpression="() => _request.RequestPurpose.WingAspectRatio" Placeholder="Enter wing aspect ratio" Step="0.001"/> *@
+    @*             $1$ <ValidationMessage For="@(() => _request.RequestPurpose.WingAspectRatio)"/> #1# *@
+    @*         </div> *@
+    @*     </div> *@
+    @*     <div class="form-group row mb-3"> *@
+    @*         <label class="col-md-2 col-form-label">Wing wetted area: <span class="text-danger">*</span></label> *@
+    @*         <div class="col-md-10"> *@
+    @*             <NumberInput TValue="double?" Value="_request.RequestPurpose.WingWettedArea" ValueExpression="() => _request.RequestPurpose.WingWettedArea" Placeholder="Enter wing wetted area" Step="0.001"/> *@
+    @*             $1$ <ValidationMessage For="@(() => _request.RequestPurpose.WingWettedArea)"/> #1# *@
+    @*         </div> *@
+    @*     </div> *@
+    @* </div> *@
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <Button Type="ButtonType.Button" Color="ButtonColor.Secondary" Class="float-end" @onclick="ResetForm">Reset</Button>
+            <Button Type="ButtonType.Submit" Color="ButtonColor.Success" Class="float-end me-2">Submit</Button>
+            @* <Button Type="ButtonType.Submit" Color="ButtonColor.Success" Class="float-end me-2" To="">Submit</Button> *@
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private Request? _request;
+    private EditContext? editContext;
+
+    protected override void OnInitialized()
+    {
+        SetUp();
+
+        editContext = new EditContext(_request);
+        base.OnInitialized();
+    }
+
+    private void SetUp()
+    {
+        RequestAircraft requestAircraft = new RequestAircraft();
+        RequestPrognosis requestPrognosis = new RequestPrognosis();
+        RequestEngine requestEngine = new RequestEngine(
+            EngineType.Turbojet,
+            4,
+            8.7);
+        RequestPurpose requestPurpose = new RequestPurpose(AircraftType.BusinessJet,
+            HighLiftDevice.CleanAirfoil,
+            10,
+            750,
+            1300,
+            12,
+            8
+            );
+        _request = new Request(requestAircraft,
+            requestEngine,
+            requestPrognosis,
+            requestPurpose
+            );
+    }
+
+    public void HandleOnBlock1Calculating()
+    {
+        var block1LandingDistance = new Block1LandingDistance();
+
+        block1LandingDistance.Handle(_request);
+
+        Console.WriteLine("--- BLOCK 1 ---"
+                          + Environment.NewLine
+                          + "Максимальный коэффициент подъемной силы, C_L,max: {0:F3}"
+                          + Environment.NewLine
+                          + "Отношение максимальной посадочной массы к максимальной взлетной массе, m_ML/m_MTO: {1:F3}"
+                          + Environment.NewLine
+                          + "Максимальная нагрузка на крыло, m/S (или m_MTO/S_W): {2:F3}"
+                          + Environment.NewLine,
+            _request.RequestPurpose.MaxLiftCoefficient,
+            _request.RequestPurpose.MaxLandingMassToMaxTakeOffMassRatio,
+            _request.RequestPurpose.MaxWingLoading);
+// todo: pass a load of params 
+        NavigationManager.NavigateTo($"/form/results-block-1?maxLiftCoefficient={_request.RequestPurpose.MaxLiftCoefficient}&maxLandingMassToMaxTakeOffMassRatio={_request.RequestPurpose.MaxLandingMassToMaxTakeOffMassRatio}&maxWingLoading={_request.RequestPurpose.MaxWingLoading}");
+    }
+
+    private void ResetForm()
+    {
+        SetUp();
+        editContext = new EditContext(_request);
+    }
+
+    // protected override void OnParametersSet()
+    // {
+    //     // CalculateToatl();
+    //     base.OnParametersSet();
+    // }
+
+}
